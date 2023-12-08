@@ -243,27 +243,7 @@
             if (result === 'confirm') {
                 var action = document.getElementById('modalMessage').innerText;
                 if (action === '수정하시겠습니까?') {
-                    // 수정 확인 버튼 클릭 시 DELETE 요청
-                    fetch('/post/' + postId + '/edit', {
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content,
-                            'X-CSRF-PARAM': document.querySelector('meta[name="_csrf_parameter"]').content,
-                            'X-CSRF-HEADER': document.querySelector('meta[name="_csrf_header"]').content,
-                        },
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('네트워크 응답이 올바르지 않습니다.');
-                            }
-                            // 성공적인 삭제 처리 (예: 다른 페이지로 리디렉션)
-                            // window.location.href = '/some-success-page';
-                        })
-                        .catch(error => {
-                            console.error('fetch 작업에 문제가 있었습니다:', error);
-                            // 필요한 경우 오류 처리
-                        });
+                    window.location.href = '/post/' + postId + '/edit';
                 } else if (action === '삭제하시겠습니까?') {
                     // 삭제 확인 버튼 클릭 시 DELETE 요청
                     fetch('/post/' + postId + '/delete', {

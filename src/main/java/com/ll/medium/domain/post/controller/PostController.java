@@ -29,7 +29,6 @@ public class PostController {
 
     @PostMapping("/write")
     public String savePost(@Valid PostFormDto postFormDto, BindingResult bindingResult) {
-        System.out.println("hello");
         if (bindingResult.hasErrors()) {
             return "domain/post/createPostForm";
         }
@@ -88,5 +87,22 @@ public class PostController {
     @ResponseBody
     public void deletePost(@PathVariable Long postId) {
         postService.deletePost(postId);
+    }
+
+    @GetMapping("/{postId}/edit")
+    public String editPostForm(@PathVariable Long postId, Model model) {
+        System.out.println("수정폼");
+        Post findPost = postService.findById(postId);
+        model.addAttribute("postFormDto", findPost);
+        return "domain/post/editForm";
+    }
+
+    @PostMapping("/{postId}/edit")
+    public String editPost(@PathVariable Long postId,@ModelAttribute @Valid @RequestBody PostFormDto postFormDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "domain/post/editForm";
+        }
+        postService.editPost(postId, postFormDto);
+        return "redirect:/";
     }
 }

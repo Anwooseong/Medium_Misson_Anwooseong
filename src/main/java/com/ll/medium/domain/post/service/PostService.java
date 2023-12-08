@@ -21,6 +21,10 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
+    public Post findById(Long postId) {
+        return postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글입니다."));
+    }
+
     public void savePost(PostFormDto postFormDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loginId = authentication.getName();
@@ -47,5 +51,10 @@ public class PostService {
     public void deletePost(Long postId) {
         Post findPost = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글입니다."));
         postRepository.delete(findPost);
+    }
+
+    public void editPost(Long postId, PostFormDto postFormDto) {
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글입니다."));
+        findPost.updatePost(postFormDto);
     }
 }

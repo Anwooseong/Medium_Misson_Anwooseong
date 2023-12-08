@@ -38,7 +38,7 @@ public class Post {
     public static Post toEntity(PostFormDto postFormDto, Member member) {
         return Post.builder()
                 .title(postFormDto.getTitle())
-                .content(postFormDto.getContents())
+                .content(postFormDto.getContent())
                 .checkPublic(postFormDto.getCheckPublic())
                 .viewCount(0)
                 .member(member)
@@ -48,6 +48,12 @@ public class Post {
     //메서드
     public void updateViewCount() {
         this.viewCount = this.viewCount + 1;
+    }
+
+    public void updatePost(PostFormDto postFormDto) {
+        this.title = postFormDto.getTitle();
+        this.content = postFormDto.getContent();
+        this.checkPublic = postFormDto.getCheckPublic();
     }
 
 }

@@ -21,7 +21,6 @@ public class HomeController {
     public String showMain(Model model) {
         // 현재 사용자의 인증 여부 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication = " + authentication);
         boolean isAuthenticated = authentication.getPrincipal() != "anonymousUser" && authentication.isAuthenticated();
 
         PageRequest pageRequest = PageRequest.of(0, 30);
@@ -29,10 +28,8 @@ public class HomeController {
         // 사용자의 인증 상태에 따라 다른 메서드 호출
         Page<Post> posts;
         if (isAuthenticated) {
-            System.out.println("인증");
             posts = postService.getAllPosts(pageRequest);
         } else {
-            System.out.println("비인증");
             posts = postService.getPublicPosts(pageRequest);
         }
 

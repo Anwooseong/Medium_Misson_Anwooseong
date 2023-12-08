@@ -1,9 +1,11 @@
 package com.ll.medium.domain.post.dto;
 
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class PostFormDto {
@@ -12,7 +14,7 @@ public class PostFormDto {
     private String title;
 
     @NotEmpty(message = "내용를 적어주세요.")
-    private String contents;
+    private String content;
 
     private Boolean checkPublic = false;
 
