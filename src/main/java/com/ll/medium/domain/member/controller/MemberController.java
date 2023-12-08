@@ -3,9 +3,14 @@ package com.ll.medium.domain.member.controller;
 import com.ll.medium.domain.member.dto.MemberFormDto;
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -51,9 +56,21 @@ public class MemberController {
         return "domain/members/loginMemberForm";
     }
 
+
     @GetMapping("/login/error")
     public String loginError(Model model) {
+
         model.addAttribute("loginErrorMessage", "아이디 또는 비밀번호를 입력해주세요");
         return "domain/members/loginMemberForm";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        SecurityContextHolder.clearContext();
+        return "redirect:/";
     }
 }

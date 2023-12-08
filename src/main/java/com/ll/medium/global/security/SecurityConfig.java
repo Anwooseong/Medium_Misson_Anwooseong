@@ -3,6 +3,7 @@ package com.ll.medium.global.security;
 import com.ll.medium.domain.member.service.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,14 +25,9 @@ public class SecurityConfig {
                         form ->
                                 form
                                         .loginPage("/members/login")
-                                        .defaultSuccessUrl("/")
+                                        .successHandler((request, response, authentication) -> response.sendRedirect("/"))
                                         .usernameParameter("loginId")
                                         .failureUrl("/members/login/error")
-                )
-                .logout(
-                        logout ->
-                                logout.logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                                        .logoutSuccessUrl("/")
                 )
                 .headers(
                         headers ->
@@ -49,15 +45,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth ->
                                 auth
-                                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                                        .requestMatchers("/", "/members/**", "/item/**", "/images/**").permitAll()
+                                        .requestMatchers("/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
+                                        .requestMatchers("/", "/members/**").permitAll()
                                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/list")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/**")).permitAll()
                                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(
                         except ->
                                 except.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                )
+                );
+
         ;
 
         return http.build();

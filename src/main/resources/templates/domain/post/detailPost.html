@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<th:block layout:fragment="css">
+    <!-- 여기에 필요한 CSS 스타일 추가 -->
+</th:block>
+
+<body>
+
+<div layout:fragment="content" class="container" th:object="${post}">
+    <!-- 게시글 상세 정보 -->
+<!--    <div class="post-details-container">-->
+<!--        <h1 th:text="${post.title}"></h1>-->
+<!--        <p class="post-info">작성자: <span th:text="${post.member.username}"></span></p>-->
+<!--        <p class="post-info">작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>-->
+<!--        <p class="post-info">수정일: <span th:text="${#temporals.format(post.updatedDate, 'yyyy-MM-dd HH:mm')}"></span></p>-->
+<!--        <p class="post-info">조회수: <span th:text="${post.viewCount}"></span></p>-->
+<!--    </div>-->
+
+<!--    &lt;!&ndash; 게시글 내용 &ndash;&gt;-->
+<!--    <div class="post-content">-->
+<!--        <p th:text="${post.content}"></p>-->
+<!--    </div>-->
+
+    <!-- checkPublic 속성에 따라 내용을 다르게 표시 -->
+    <div th:if="${isPossible}">
+        <!-- checkPublic이 true인 경우, 아무나 접근 가능한 내용 -->
+        <!-- 게시글 상세 정보 -->
+        <div class="post-details-container">
+            <h1 th:text="${post.title}"></h1>
+            <p class="post-info">작성자: <span th:text="${post.member.username}"></span></p>
+            <p class="post-info">작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+            <p class="post-info">수정일: <span th:text="${#temporals.format(post.updatedDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+            <p class="post-info">조회수: <span th:text="${post.viewCount}"></span></p>
+            <p class="post-info">공개여부: <span th:text="${post.checkPublic ? '공개' : '비공개'}"></span></p>
+        </div>
+
+        <!-- 게시글 내용 -->
+        <div class="post-content">
+            <p th:text="${post.content}"></p>
+        </div>
+    </div>
+    <div th:unless="${isPossible}">
+        <!-- checkPublic이 false인 경우, 인증된 사용자만 접근 가능한 내용 -->
+        <p>이 내용은 인증된 사용자만 볼 수 있습니다.</p>
+<!--        <div th:if="${#authorization.expression('isAuthenticated()')}">-->
+<!--            &lt;!&ndash; 인증된 사용자일 경우에만 보이는 내용 &ndash;&gt;-->
+<!--            <p>이 내용은 인증된 사용자만 볼 수 있습니다.</p>-->
+<!--        </div>-->
+<!--        <div th:unless="${#authorization.expression('isAuthenticated()')}">-->
+<!--            &lt;!&ndash; 인증되지 않은 사용자일 경우에만 보이는 내용 &ndash;&gt;-->
+<!--            <p>이 내용은 로그인한 사용자만 볼 수 있습니다.</p>-->
+<!--        </div>-->
+    </div>
+
+    <!-- Pagination -->
+    <ul class="pagination">
+        <!-- 페이지 이동 링크 추가 -->
+    </ul>
+</div>
+
+</body>
+</html>
