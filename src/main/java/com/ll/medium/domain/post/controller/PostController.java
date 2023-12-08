@@ -79,7 +79,14 @@ public class PostController {
             //checkPublic이 true일때
             model.addAttribute("isPossible", true);
         }
+        model.addAttribute("isMyPost", authentication.getName().equals(post.getMember().getLoginId()));
         model.addAttribute("post", post);
         return "domain/post/detailPost";
+    }
+
+    @DeleteMapping("/{postId}/delete")
+    @ResponseBody
+    public void deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
     }
 }

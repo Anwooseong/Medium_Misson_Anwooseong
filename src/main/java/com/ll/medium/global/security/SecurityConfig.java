@@ -50,6 +50,7 @@ public class SecurityConfig {
                                         .requestMatchers("/admin/**").hasRole("ADMIN")
                                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/list")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/**")).permitAll()
+//                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/post/{postId}/delete")).authenticated()
                                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(

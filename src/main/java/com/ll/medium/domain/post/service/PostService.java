@@ -43,4 +43,9 @@ public class PostService {
         findPost.updateViewCount();
         return findPost;
     }
+
+    public void deletePost(Long postId) {
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글입니다."));
+        postRepository.delete(findPost);
+    }
 }
