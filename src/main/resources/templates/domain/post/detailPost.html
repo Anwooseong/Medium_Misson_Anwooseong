@@ -193,6 +193,9 @@
                 <a href="#" th:onclick="'showModal(\'edit\', ' + ${post.id} + ')'" >수정</a>
                 <a href="#" th:onclick="'showModal(\'delete\', ' + ${post.id} + ')'" >삭제</a>
             </div>
+            <div class="edit-delete-buttons">
+                <a th:href="@{'/b/' + ${post.member.id}+'/list'}">유저 게시글 목록</a>
+            </div>
 
         </div>
 

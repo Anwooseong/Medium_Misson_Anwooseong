@@ -38,8 +38,8 @@ public class PostController {
 
     @GetMapping("/list")
     public String getPosts(
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "30") int size,
             Model model
     ) {
         PageRequest pageRequest = PageRequest.of(page - 1, size);
@@ -91,18 +91,34 @@ public class PostController {
 
     @GetMapping("/{postId}/edit")
     public String editPostForm(@PathVariable Long postId, Model model) {
-        System.out.println("수정폼");
         Post findPost = postService.findById(postId);
         model.addAttribute("postFormDto", findPost);
         return "domain/post/editForm";
     }
 
     @PostMapping("/{postId}/edit")
-    public String editPost(@PathVariable Long postId,@ModelAttribute @Valid @RequestBody PostFormDto postFormDto, BindingResult bindingResult, Model model) {
+    public String editPost(@PathVariable Long postId, @ModelAttribute @Valid @RequestBody PostFormDto postFormDto, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "domain/post/editForm";
         }
         postService.editPost(postId, postFormDto);
         return "redirect:/";
+    }
+
+    @GetMapping("/myList")
+    public String myPostList(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "size", defaultValue = "30") int size,
+            Model model
+    ) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
+
+        // Spring Security를 이용하여 사용자의 인증 상태 확인
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Page<Post> posts = postService.getMyPosts(authentication, pageRequest);
+
+        model.addAttribute("posts", posts);
+        return "domain/post/myList";
     }
 }

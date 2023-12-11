@@ -36,21 +36,21 @@ public class SecurityConfig {
                                                 frameOptions.sameOrigin()
                                 )
                 )
+                .authorizeHttpRequests(
+                        auth ->
+                                auth
+                                        .requestMatchers("/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
+                                        .requestMatchers("/", "/members/**", "/b/**").permitAll()
+                                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/list")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/**")).permitAll()
+                                        .anyRequest().authenticated()
+                )
                 .csrf(
                         csrf ->
                                 csrf.ignoringRequestMatchers(
                                         "/h2-console/**"
                                 )
-                )
-                .authorizeHttpRequests(
-                        auth ->
-                                auth
-                                        .requestMatchers("/css/**", "/js/**", "/images/**", "/h2-console/**").permitAll()
-                                        .requestMatchers("/", "/members/**").permitAll()
-                                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/list")).permitAll()
-                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/**")).permitAll()
-                                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(
                         except ->
