@@ -169,7 +169,7 @@
 
 <body>
 
-<div layout:fragment="content" class="container" th:object="${post}">
+<div layout:fragment="content" class="container" th:object="${post}" th:init="(${post} != null)">
     <div th:if="${isPossible}">
         <input class="custom-input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <!-- 게시글 상세 정보 -->
@@ -231,6 +231,38 @@
 
     <!-- JavaScript 코드 추가 -->
     <script th:inline="javascript">
+        function increaseHitCount(postId) {
+            fetch('/post/' + postId + '/increaseHit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content,
+                    'X-CSRF-PARAM': document.querySelector('meta[name="_csrf_parameter"]').content,
+                    'X-CSRF-HEADER': document.querySelector('meta[name="_csrf_header"]').content,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 올바르지 않습니다.');
+                    }
+                    // Success: You can handle the response if needed
+                })
+                .catch(error => {
+                    console.error('fetch 작업에 문제가 있었습니다:', error);
+                    // Handle the error if needed
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get postId from Thymeleaf context
+            var postId = /*[[${post.id}]]*/ null;
+
+            if (postId !== null) {
+                // Call the function to increase hit count
+                increaseHitCount(postId);
+            }
+        });
+
         function showModal(action, postId) {
             var message = action === 'edit' ? '수정하시겠습니까?' : '삭제하시겠습니까?';
             document.getElementById('modalMessage').innerText = message;
@@ -279,7 +311,7 @@
 
         // 모달 외부 클릭 시 닫기
         window.onclick = function (event) {
-            var modal = document.getElementById('myModal');
+            var modal = document.g호출해etElementById('myModal');
             if (event.target === modal) {
                 modal.style.display = 'none';
             }

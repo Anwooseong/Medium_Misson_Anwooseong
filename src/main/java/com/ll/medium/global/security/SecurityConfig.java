@@ -44,6 +44,7 @@ public class SecurityConfig {
                                         .requestMatchers("/admin/**").hasRole("ADMIN")
                                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/list")).permitAll()
                                         .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/post/**")).permitAll()
+                                        .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.POST, "/post/{postId}/increaseHit")).permitAll()
                                         .anyRequest().authenticated()
                 )
                 .csrf(

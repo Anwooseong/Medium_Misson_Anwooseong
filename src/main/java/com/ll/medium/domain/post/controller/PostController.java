@@ -83,6 +83,12 @@ public class PostController {
         return "domain/post/detailPost";
     }
 
+    @PostMapping("/{postId}/increaseHit")
+    @ResponseBody
+    public void detailPost(@PathVariable Long postId) {
+        postService.viewCount(postId);
+    }
+
     @DeleteMapping("/{postId}/delete")
     @ResponseBody
     public void deletePost(@PathVariable Long postId) {

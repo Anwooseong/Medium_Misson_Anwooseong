@@ -54,8 +54,12 @@ public class PostService {
 
     public Post detailPost(Long postId) {
         Post findPost = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글입니다."));
-        findPost.updateViewCount();
         return findPost;
+    }
+
+    public void viewCount(Long postId) {
+        Post findPost = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException("존재하지 않는 게시글입니다."));
+        findPost.updateViewCount();
     }
 
     public void deletePost(Long postId) {
