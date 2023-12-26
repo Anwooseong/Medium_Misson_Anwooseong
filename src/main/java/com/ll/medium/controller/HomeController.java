@@ -22,6 +22,7 @@ public class HomeController {
         // 현재 사용자의 인증 여부 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = authentication.getPrincipal() != "anonymousUser" && authentication.isAuthenticated();
+        System.out.println("isAuthenticated = " + isAuthenticated);
 
         PageRequest pageRequest = PageRequest.of(0, 30);
 

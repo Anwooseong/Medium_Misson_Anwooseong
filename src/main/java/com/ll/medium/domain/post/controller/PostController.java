@@ -47,7 +47,6 @@ public class PostController {
         // Spring Security를 이용하여 사용자의 인증 상태 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         boolean isAuthenticated = authentication.getPrincipal() != "anonymousUser" && authentication.isAuthenticated();
-
         // 사용자의 인증 상태에 따라 다른 메서드 호출
         Page<Post> posts;
         if (isAuthenticated) {

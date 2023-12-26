@@ -28,6 +28,8 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    private boolean isPaid;
+
     @CreatedDate
     @Column(updatable = false) // 생성일은 수정되지 않도록 설정
     private LocalDateTime createdDate;
@@ -40,6 +42,7 @@ public class Post {
                 .title(postFormDto.getTitle())
                 .content(postFormDto.getContent())
                 .checkPublic(postFormDto.getCheckPublic())
+                .isPaid(postFormDto.getIsPaid())
                 .viewCount(0)
                 .member(member)
                 .build();

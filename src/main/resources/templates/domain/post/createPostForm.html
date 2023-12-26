@@ -96,8 +96,17 @@
             </label>
         </div>
 
+        <div class="form-check custom-checkbox" th:if="${#authorization.expression('hasRole(''ROLE_PAID'')') or #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+            <input class="form-check-input" type="checkbox" id="checkPaid" name="isPaid">
+            <label class="form-check-label" for="checkPaid">
+                유료글 게시글
+            </label>
+        </div>
+
+
         <!-- checkPublic hidden 필드 추가 -->
         <input type="hidden" th:field="*{checkPublic}"/>
+        <input type="hidden" th:field="*{isPaid}"/>
         <!-- CSRF 토큰 추가 -->
         <input class="custom-input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <button type="submit" class="btn btn-primary">게시글 등록</button>
