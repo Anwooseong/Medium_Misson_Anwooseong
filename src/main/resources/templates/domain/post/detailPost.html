@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<th:block layout:fragment="css">
+    <style>
+        /* ... (이전 스타일 코드 그대로 유지) ... */
+        /* 여기에 필요한 CSS 스타일 추가 */
+
+        .post-details-container {
+            max-width: 900px;
+            margin: 10px auto;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column; /* Adjusted to column layout */
+        }
+
+        .post-details-container h1 {
+            font-weight: bold;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .post-info {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .post-info > span {
+            margin-right: 10px;
+        }
+
+        .post-content {
+            box-sizing: border-box;
+            border-radius: 4px;
+            padding: 10px;
+            background-color: transparent;
+            width: fit-content;
+        }
+
+        .pagination {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination li {
+            margin-right: 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 12px;
+            background-color: #ddd;
+            color: #333;
+            border-radius: 4px;
+        }
+
+        .pagination a.active {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .comment-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .comment-form {
+            margin-top: 20px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+
+        .comment-form button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background-color: #45a049;
+        }
+
+        /* 수정 삭제 버튼 스타일 추가 */
+        .edit-delete-buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .edit-delete-buttons a {
+            margin-left: 10px;
+            text-decoration: none;
+            padding: 8px 12px;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .edit-delete-buttons a:hover {
+            background-color: #45a049;
+        }
+
+        /* 모달 스타일 추가 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .modal-buttons {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .modal-buttons button {
+            background-color: #4caf50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .modal-buttons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</th:block>
+
+<body>
+
+<div layout:fragment="content" class="container" th:object="${post}" th:init="(${post} != null)">
+    <div th:if="${isPossible}">
+        <input class="custom-input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <!-- 게시글 상세 정보 -->
+        <div class="post-details-container">
+            <div class="post-info">
+                <span>작성자: <span th:text="${post.member.username}"></span></span>
+                <span>조회수: <span th:text="${post.viewCount}"></span></span>
+                <span>공개여부: <span th:text="${post.checkPublic ? '공개' : '비공개'}"></span></span>
+            </div>
+            <div class="post-info">
+                <span>작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                <span>수정일: <span th:text="${#temporals.format(post.updatedDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+            </div>
+            <h1 th:text="${post.title}"></h1>
+            <!-- 게시글 내용 -->
+            <div class="post-content">
+                <p th:text="${post.content}"></p>
+            </div>
+
+            <div class="edit-delete-buttons" th:if="${isMyPost}">
+                <a href="#" th:onclick="'showModal(\'edit\', ' + ${post.id} + ')'" >수정</a>
+                <a href="#" th:onclick="'showModal(\'delete\', ' + ${post.id} + ')'" >삭제</a>
+            </div>
+            <div class="edit-delete-buttons">
+                <a th:href="@{'/b/' + ${post.member.id}+'/list'}">유저 게시글 목록</a>
+            </div>
+
+        </div>
+
+        <!-- 댓글 입력 폼 -->
+        <div class="comment-container">
+            <h2>댓글</h2>
+            <form class="comment-form" th:action="@{'/post/' + ${post.id} + '/comment'}" method="post">
+                <textarea name="commentContent" placeholder="댓글을 입력하세요"></textarea>
+                <button type="submit">댓글 작성</button>
+            </form>
+        </div>
+
+        <!-- 모달 -->
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <p id="modalMessage"></p>
+                <div class="modal-buttons">
+                    <button onclick="handleModal('confirm')">확인</button>
+                    <button onclick="handleModal('cancel')">취소</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div th:unless="${isPossible}">
+        <p>이 내용은 인증된 사용자만 볼 수 있습니다.</p>
+    </div>
+
+    <!-- CSRF 메타 태그 추가 -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf_parameter" th:content="${_csrf.parameterName}" />
+
+    <!-- JavaScript 코드 추가 -->
+    <script th:inline="javascript">
+        function increaseHitCount(postId) {
+            fetch('/post/' + postId + '/increaseHit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content,
+                    'X-CSRF-PARAM': document.querySelector('meta[name="_csrf_parameter"]').content,
+                    'X-CSRF-HEADER': document.querySelector('meta[name="_csrf_header"]').content,
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('네트워크 응답이 올바르지 않습니다.');
+                    }
+                    // Success: You can handle the response if needed
+                })
+                .catch(error => {
+                    console.error('fetch 작업에 문제가 있었습니다:', error);
+                    // Handle the error if needed
+                });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get postId from Thymeleaf context
+            var postId = /*[[${post.id}]]*/ null;
+
+            if (postId !== null) {
+                // Call the function to increase hit count
+                increaseHitCount(postId);
+            }
+        });
+
+        function showModal(action, postId) {
+            var message = action === 'edit' ? '수정하시겠습니까?' : '삭제하시겠습니까?';
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('myModal').style.display = 'block';
+            // postId를 modal에 저장
+            document.getElementById('myModal').dataset.postId = postId;
+        }
+
+        function handleModal(result) {
+            var modal = document.getElementById('myModal');
+            var postId = modal.dataset.postId;
+
+            if (result === 'confirm') {
+                var action = document.getElementById('modalMessage').innerText;
+                if (action === '수정하시겠습니까?') {
+                    window.location.href = '/post/' + postId + '/edit';
+                } else if (action === '삭제하시겠습니까?') {
+                    // 삭제 확인 버튼 클릭 시 DELETE 요청
+                    fetch('/post/' + postId + '/delete', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content,
+                            'X-CSRF-PARAM': document.querySelector('meta[name="_csrf_parameter"]').content,
+                            'X-CSRF-HEADER': document.querySelector('meta[name="_csrf_header"]').content,
+                        },
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('네트워크 응답이 올바르지 않습니다.');
+                            }
+                            // 성공적인 삭제 처리 (예: 다른 페이지로 리디렉션)
+                            window.location.href = '/';
+                        })
+                        .catch(error => {
+                            console.error('fetch 작업에 문제가 있었습니다:', error);
+                            // 필요한 경우 오류 처리
+                        });
+                }
+            } else {
+                console.log('사용자가 취소를 선택했습니다.');
+            }
+
+            modal.style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function (event) {
+            var modal = document.g호출해etElementById('myModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        };
+    </script>
+    <!-- 끝 -->
+</div>
+</body>
+</html>

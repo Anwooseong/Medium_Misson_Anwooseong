@@ -170,7 +170,7 @@
             <a th:href="@{'/post/list?page=' + ${posts.previousPageable().pageNumber}+'&size=30'}">&laquo; 이전</a>
         </li>
         <li th:each="page : ${#numbers.sequence(0, posts.totalPages - 1)}">
-            <a th:href="@{'/post/list?page=' + ${page + 1}+'&size=30'}" th:class="${page == posts.number ? 'active' : ''}" th:text="${page + 1}"></a>
+            <a th:href="@{'/post/list?page=' + ${page+1}+'&size=30'}" th:class="${page == posts.number ? 'active' : ''}" th:text="${page + 1}"></a>
         </li>
         <li th:if="${posts.hasNext()}">
             <a th:href="@{'/post/list?page=' + ${posts.nextPageable().pageNumber}+'&size=30'}">다음 &raquo;</a>
