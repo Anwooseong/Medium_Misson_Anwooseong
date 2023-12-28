@@ -35,6 +35,13 @@ public class Member {
     @OneToMany(mappedBy = "member", orphanRemoval = true)
     List<Post> postList = new ArrayList<>();
 
+    public Member(String username, String loginId, String password, boolean isPaid, PasswordEncoder passwordEncoder) {
+        this.username = username;
+        this.loginId = loginId;
+        this.password = passwordEncoder.encode(password);
+        this.isPaid = isPaid;
+    }
+
     public static Member toEntity(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .loginId(memberFormDto.getLoginId())

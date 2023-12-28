@@ -54,4 +54,8 @@ public class MemberService implements UserDetailsService {
 //                member.getAuthorities()
 //        );
     }
+
+    public Optional<Member> findByUsername(String username) {
+        return memberRepository.findByUsername(username);
+    }
 }

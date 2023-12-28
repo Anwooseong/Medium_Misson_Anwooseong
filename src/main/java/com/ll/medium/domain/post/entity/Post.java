@@ -2,19 +2,18 @@ package com.ll.medium.domain.post.entity;
 
 import com.ll.medium.domain.member.entity.Member;
 import com.ll.medium.domain.post.dto.PostFormDto;
+import com.ll.medium.global.jpa.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Post {
+@EntityListeners(AuditingEntityListener.class)
+public class Post extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +28,6 @@ public class Post {
     private Member member;
 
     private boolean isPaid;
-
-    @CreatedDate
-    @Column(updatable = false) // 생성일은 수정되지 않도록 설정
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    private LocalDateTime updatedDate;
 
     public static Post toEntity(PostFormDto postFormDto, Member member) {
         return Post.builder()

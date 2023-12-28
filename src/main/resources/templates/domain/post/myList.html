@@ -136,6 +136,7 @@
                     </div>
                     <div class="post-details">
                         <p th:text="${post.checkPublic ? '공개' : '비공개'}"></p>
+                        <p th:text="${post.isPaid ? '유료글' : '무료글'}"></p>
                         <p th:text="${post.viewCount + ' views'}"></p>
                         <p th:text="${post.member.username}"></p>
                     </div>
@@ -156,6 +157,7 @@
                     </div>
                     <div class="post-details">
                         <p th:text="${post.checkPublic ? '공개' : '비공개'}"></p>
+                        <p th:text="${post.isPaid ? '유료글' : '무료글'}"></p>
                         <p th:text="${post.viewCount + ' views'}"></p>
                         <p th:text="${post.member.username}"></p>
                     </div>
