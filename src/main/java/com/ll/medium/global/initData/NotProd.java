@@ -36,6 +36,7 @@ public class NotProd {
             Member memberUser3 = memberService.saveMember(new Member("user3", "user3", "user3@", true, passwordEncoder));
             Member memberUser4 = memberService.saveMember(new Member("user4", "user4", "user4@", true, passwordEncoder));
 
+            //유료회원
             IntStream.rangeClosed(5, 100).forEach(i -> {
                 memberService.saveMember(new Member("user"+i, "user"+i, "user"+i+"@", true, passwordEncoder));
             });
@@ -44,22 +45,27 @@ public class NotProd {
                 memberService.saveMember(new Member("user"+i, "user"+i, "user"+i+"@", false, passwordEncoder));
             });
 
+            //memberUser1, 비공개글, 유료글
             IntStream.rangeClosed(1, 10).forEach(i -> {
                 postRepository.save(Post.toEntity(new PostFormDto("test"+i, "test"+i, false, true), memberUser1));
             });
 
+            //memberUser1, 공개글, 유료글
             IntStream.rangeClosed(11, 20).forEach(i -> {
                 postRepository.save(Post.toEntity(new PostFormDto("test"+i, "test"+i, true, true), memberUser1));
             });
 
+            //memberUser2, 비공개글, 유료글
             IntStream.rangeClosed(21, 80).forEach(i -> {
                 postRepository.save(Post.toEntity(new PostFormDto("test"+i, "test"+i, false, true), memberUser2));
             });
 
+            //memberUser3, 공개글, 유료글
             IntStream.rangeClosed(81, 100).forEach(i -> {
                 postRepository.save(Post.toEntity(new PostFormDto("test"+i, "test"+i, true, true), memberUser3));
             });
 
+            //memberUser4, 비공개글, 무료글
             IntStream.rangeClosed(101, 120).forEach(i -> {
                 postRepository.save(Post.toEntity(new PostFormDto("test"+i, "test"+i, false, false), memberUser4));
             });
