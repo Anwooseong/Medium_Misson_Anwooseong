@@ -1,13 +1,15 @@
 package com.ll.medium.domain.member.entity;
 
-import com.ll.medium.domain.member.constants.Role;
 import com.ll.medium.domain.member.dto.MemberFormDto;
 import com.ll.medium.domain.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -28,19 +30,40 @@ public class Member {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private boolean isPaid;
 
     @OneToMany(mappedBy = "member", orphanRemoval = true)
     List<Post> postList = new ArrayList<>();
+
+    public Member(String username, String loginId, String password, boolean isPaid, PasswordEncoder passwordEncoder) {
+        this.username = username;
+        this.loginId = loginId;
+        this.password = passwordEncoder.encode(password);
+        this.isPaid = isPaid;
+    }
 
     public static Member toEntity(MemberFormDto memberFormDto, PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .loginId(memberFormDto.getLoginId())
                 .username(memberFormDto.getUsername())
                 .password(passwordEncoder.encode(memberFormDto.getPassword()))
-                .role(Role.USER)
                 .build();
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        authorities.add(new SimpleGrantedAuthority("ROLE_MEMBER"));
+
+        if (isPaid) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_PAID"));
+        }
+
+        if (List.of("system", "admin").contains(username)) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
+        return authorities;
     }
 
     //연관관계 메서드

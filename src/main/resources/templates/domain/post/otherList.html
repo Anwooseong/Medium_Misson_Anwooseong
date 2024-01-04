@@ -127,7 +127,7 @@
         <!-- 인증된 사용자일 경우 -->
         <p>인증된 사용자입니다. 비공개 게시글도 표시됩니다.</p>
         <!-- 게시글 목록을 표시하는 코드 추가 -->
-        <div th:each="post : ${posts}" th:if="${post.checkPublic or #authorization.expression('hasRole(''USER'')') or #authorization.expression('hasRole(''ADMIN'')')}">
+        <div th:each="post : ${posts}" th:if="${post.checkPublic or #authorization.expression('hasRole(''ROLE_MEMBER'')') or #authorization.expression('hasRole(''ROLE_ADMIN'')')}">
             <a th:href="@{'/b/'+${memberId} +'/'+ ${post.id}}" class="post-card">
                 <div class="post-info">
                     <div>
@@ -136,6 +136,7 @@
                     </div>
                     <div class="post-details">
                         <p th:text="${post.checkPublic ? '공개' : '비공개'}"></p>
+                        <p th:text="${post.isPaid ? '유료글' : '무료글'}"></p>
                         <p th:text="${post.viewCount + ' views'}"></p>
                         <p th:text="${post.member.username}"></p>
                     </div>
@@ -156,6 +157,7 @@
                     </div>
                     <div class="post-details">
                         <p th:text="${post.checkPublic ? '공개' : '비공개'}"></p>
+                        <p th:text="${post.isPaid ? '유료글' : '무료글'}"></p>
                         <p th:text="${post.viewCount + ' views'}"></p>
                         <p th:text="${post.member.username}"></p>
                     </div>

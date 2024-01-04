@@ -15,15 +15,15 @@ public class MemberFormDto {
 
     @NotEmpty(message = "회원님의 로그인Id를 적어주세요.")
     @Pattern(
-            regexp = "^(?=.*[a-z])[a-z0-9]{6,20}$",
-            message = "id는 소문자 하나이상있어야하고, 6자~20자여야합니다."
+            regexp = "^(?=.*[a-z])[a-z0-9]{5,20}$",
+            message = "id는 소문자 하나이상있어야하고, 5자~20자여야합니다."
     )
     private String loginId;
 
     @NotBlank(message = "회원님의 비밀번호를 적어주세요.")
     @Pattern(
-            regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*\\W)(?=\\S+$).{8,16}",
-            message = "영문자(A-Z, a-z), 숫자, 특수문자로 구성된 8~16자입니다."
+            regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*\\W)(?=\\S+$).{5,16}",
+            message = "영문자(A-Z, a-z), 숫자, 특수문자로 구성된 5~16자입니다."
     )
     private String password;
 

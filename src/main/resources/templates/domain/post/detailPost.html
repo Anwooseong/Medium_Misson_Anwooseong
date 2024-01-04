@@ -173,31 +173,68 @@
     <div th:if="${isPossible}">
         <input class="custom-input" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <!-- 게시글 상세 정보 -->
-        <div class="post-details-container">
-            <div class="post-info">
-                <span>작성자: <span th:text="${post.member.username}"></span></span>
-                <span>조회수: <span th:text="${post.viewCount}"></span></span>
-                <span>공개여부: <span th:text="${post.checkPublic ? '공개' : '비공개'}"></span></span>
-            </div>
-            <div class="post-info">
-                <span>작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></span>
-                <span>수정일: <span th:text="${#temporals.format(post.updatedDate, 'yyyy-MM-dd HH:mm')}"></span></span>
-            </div>
-            <h1 th:text="${post.title}"></h1>
-            <!-- 게시글 내용 -->
-            <div class="post-content">
-                <p th:text="${post.content}"></p>
-            </div>
+        <div th:if="${post.isPaid}">
+            <div th:if="${authorityPaid}">
+                <div class="post-details-container">
+                    <div class="post-info">
+                        <span>작성자: <span th:text="${post.member.username}"></span></span>
+                        <span>조회수: <span th:text="${post.viewCount}"></span></span>
+                        <span>공개여부: <span th:text="${post.checkPublic ? '공개' : '비공개'}"></span></span>
+                        <span>유료여부: <span th:text="${post.isPaid ? '유료글' : '무료글'}"></span></span>
+                    </div>
+                    <div class="post-info">
+                        <span>작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                        <span>수정일: <span th:text="${#temporals.format(post.updatedDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                    </div>
+                    <h1 th:text="${post.title}"></h1>
+                    <!-- 게시글 내용 -->
+                    <div class="post-content">
+                        <p th:text="${post.content}"></p>
+                    </div>
 
-            <div class="edit-delete-buttons" th:if="${isMyPost}">
-                <a href="#" th:onclick="'showModal(\'edit\', ' + ${post.id} + ')'" >수정</a>
-                <a href="#" th:onclick="'showModal(\'delete\', ' + ${post.id} + ')'" >삭제</a>
+                    <div class="edit-delete-buttons" th:if="${isMyPost}">
+                        <a href="#" th:onclick="'showModal(\'edit\', ' + ${post.id} + ')'" >수정</a>
+                        <a href="#" th:onclick="'showModal(\'delete\', ' + ${post.id} + ')'" >삭제</a>
+                    </div>
+                    <div class="edit-delete-buttons">
+                        <a th:href="@{'/b/' + ${post.member.id}+'/list'}">유저 게시글 목록</a>
+                    </div>
+                </div>
             </div>
-            <div class="edit-delete-buttons">
-                <a th:href="@{'/b/' + ${post.member.id}+'/list'}">유저 게시글 목록</a>
+            <div th:unless="${authorityPaid}">
+                <div class="post-details-container">
+                    <span>이 글은 유료멤버십 전용입니다.</span>
+                </div>
             </div>
-
         </div>
+        <div th:unless="${post.isPaid}">
+            <div class="post-details-container">
+                <div class="post-info">
+                    <span>작성자: <span th:text="${post.member.username}"></span></span>
+                    <span>조회수: <span th:text="${post.viewCount}"></span></span>
+                    <span>공개여부: <span th:text="${post.checkPublic ? '공개' : '비공개'}"></span></span>
+                    <span>유료여부: <span th:text="${post.isPaid ? '유료글' : '무료글'}"></span></span>
+                </div>
+                <div class="post-info">
+                    <span>작성일: <span th:text="${#temporals.format(post.createdDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                    <span>수정일: <span th:text="${#temporals.format(post.updatedDate, 'yyyy-MM-dd HH:mm')}"></span></span>
+                </div>
+                <h1 th:text="${post.title}"></h1>
+                <!-- 게시글 내용 -->
+                <div class="post-content">
+                    <p th:text="${post.content}"></p>
+                </div>
+
+                <div class="edit-delete-buttons" th:if="${isMyPost}">
+                    <a href="#" th:onclick="'showModal(\'edit\', ' + ${post.id} + ')'" >수정</a>
+                    <a href="#" th:onclick="'showModal(\'delete\', ' + ${post.id} + ')'" >삭제</a>
+                </div>
+                <div class="edit-delete-buttons">
+                    <a th:href="@{'/b/' + ${post.member.id}+'/list'}">유저 게시글 목록</a>
+                </div>
+            </div>
+        </div>
+
 
         <!-- 댓글 입력 폼 -->
         <div class="comment-container">

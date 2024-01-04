@@ -18,4 +18,6 @@ public class PostFormDto {
 
     private Boolean checkPublic = false;
 
+    private Boolean isPaid = false;
+
 }
